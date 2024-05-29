@@ -3,6 +3,7 @@ from fake_useragent import UserAgent
 from bs4 import BeautifulSoup
 from urllib.error import HTTPError
 from openpyxl import Workbook
+import re  # 정규식 사용 라이브러리
 
 # 워크북 생성 openpyxl workbook 생성
 wb = Workbook()
@@ -36,7 +37,11 @@ for idx in range(10):
 
     for idx, item in enumerate(data["items"], 1):
         # print(f"{idx} - 제목 : {item["title"]},\t 링크 : {item["link"]}") # <b>아이폰</b>
-        ws.append([num, item["title"], item["link"]])
+
+        # 정규식을 사용해서 태그 정리 <b>아이폰</b> => 아이폰
+        title = re.sub("<.*?>", "", item["title"])
+
+        ws.append([num, title, item["link"]])
         num += 1
 
 base_dir = "./crawl/file/"  # ipynb 에서 할때랑 경로 잡는게 틀리다 (터미널에 PS E:\source\pythonsource> 까지만 되있음)
