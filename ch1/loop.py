@@ -15,7 +15,7 @@ while i < 101:
     i += 1
 # %%
 i = 0
-while i <= 100:
+while i <= 98:
     i += 2
     print(i, end=" ")
 
@@ -60,10 +60,10 @@ i
 
 # %%
 for i in range(10):
-    print(i, end=" ")
+    print(i, end=" ")  # 0 1 2 3 4 5 6 7 8 9
 
 for i in range(1, 11):
-    print(i, end=" ")
+    print(i, end=" ")  # 1 2 3 4 5 6 7 8 9 10
 
 # %%
 # 1 ~ 100 까지 홀수만
@@ -78,15 +78,17 @@ for i in range(1, 101):
 sum1
 
 # %%
-# sum() 함수 사용해서 1 ~ 100 까지 합계 구하기
-print(sum(range(1, 101)))
-print(sum(range(1, 101, 2)))  # 홀수 합계
+# sum() 함수 사용해서 합계 구하기
+print(sum(range(1, 101)))  # 1 ~ 100 까지 합계 : 5050
+print(sum(range(1, 101, 2)))  # 홀수 합계 : 2500
 
 # %%
 range(10, 1)
-print(list(range(10, 1)))
-print(list(range(10, 1, -1)))  # 거꾸로 가려면 -1 을 알려줘야 한다
-print(list(range(10, -1, -1)))
+print(list(range(10, 1)))  # []
+
+# 거꾸로 가려면 -1 을 알려줘야 한다
+print(list(range(10, 1, -1)))  # [10, 9, 8, 7, 6, 5, 4, 3, 2]
+print(list(range(10, -1, -1)))  # [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
 
 # %%
 # 사용자로부터 숫자를 입력받은 후 1 부터 사용자 입력 숫자까지 합계 구한 뒤 출력
@@ -147,3 +149,5 @@ while i < 11:
     if i % 2 == 1:
         continue
     print(i, end=" ")
+
+# %%

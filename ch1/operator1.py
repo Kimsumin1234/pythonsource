@@ -59,14 +59,14 @@ print("============================")
 # and, or, not
 a, b, c = 100, 80, 130
 print("논리 연산자")
-print("and : ", a > b and b > c)
-print("or : ", a > b or b > c)
-print("not : ", not b > c)
-print("not : ", not False)
-print("not : ", not True)
+print("and : ", a > b and b > c)  # False
+print("or : ", a > b or b > c)  # True
+print("not : ", not b > c)  # True
+print("not : ", not False)  # True
+print("not : ", not True)  # False
 
 print("============================")
 # 삼항연산자는 없음
 # 참일때 if 조건 else 거짓일때 (삼항연사자랑 비슷하게 써먹을수있다)
 str = "안녕하세요" if True else "반갑습니다"
-print(str)
+print(str)  # 안녕하세요
