@@ -15,20 +15,13 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-# settings.py 설정
-# settings.py 에서 INSTALLED_APPS = [ "todo", ] 입력
-# 데이타베이스 종류 변경하고 싶으면 : DATABASES = { } 여기서 변경
-# 사이트 영어로 뜨는거 를 한글로 바꾸고 싶으면 : LANGUAGE_CODE = 'en-us' -> 'ko-kr' 변경
-# TIME_ZONE = 'UTC' -> 'Asia/Seoul' 변경
-
 from django.contrib import admin
-from django.urls import path, include  # include 작성
+from django.urls import path, include
+from django.views.generic import RedirectView
 
 urlpatterns = [
-    # 관리자 페이지 자동 생성
-    # 장고는 url 적을때 /admin 을 안하고 admin/ 으로 사용한다
     path("admin/", admin.site.urls),
-    # todo/ 로 들어오는 경로요청은 todo 앱의 urls 파일이 담당
-    # path('blog/', include('blog.urls')) 위에 코드 복사 붙여넣기후 blog 에 app 이름 넣음
-    path("todo/", include("todo.urls")),
+    path("photo/", include("photo.urls")),
+    # # http://127.0.0.1:8000/ 으로 주소를 치면 "http://127.0.0.1:8000/photo/" 로 이동
+    path("", RedirectView.as_view(url="/photo/")),
 ]

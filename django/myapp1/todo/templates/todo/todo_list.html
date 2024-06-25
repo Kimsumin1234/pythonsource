@@ -3,6 +3,35 @@
   <h2>Todo List</h2>
 </div>
 <div class="row mb-3">
-  <div class="col">Todo</div>
+  <div class="col">
+    {% comment %} "/todo/create" 이렇게 직접적으로 주소입력해서 하는방식도 가능하다 {% endcomment %} {% comment %}
+    <a href="/todo/create" class="btn btn-success">
+      {% endcomment %} {% comment %} 장고에서 추천하는 방법(수정할때 하드코딩을 덜하는법) {% endcomment %} {% comment %} ==> "{% url "create" %}"
+      urls.py 에서 name에 별칭을 입력 {% endcomment %} <a href="{% url "create" %}" class="btn btn-success">
+      <i class="fa-solid fa-plus"></i>
+      Todo
+    </a>
+  </div>
+  <div class="col text-end">
+    <a href="{% url "done_list" %}" class="btn btn-primary">완료된 Todo 목록</a>
+  </div>
 </div>
+{% comment %} {{todos}} {% endcomment %}
+<table class="table mt-5">
+  {% for todo in todos %}
+  <tr>
+    <th>
+      {% comment %} id= : <int:id> 라서 id= 으로 맞춰준다 {% endcomment %}
+      <a href="{% url "read" id=todo.id %}" class="text-reset text-decoration-none">{{todo.title}}</a>
+      {% comment %} important 가 true 인것만 ! 뱃지 보여주기 {% endcomment %} {% if todo.important %}
+      <span class="badge text-bg-danger">!</span>
+      {% endif %}
+    </th>
+    <td class="text-end">
+      <a href="{% url "done" id=todo.id %}" class="btn btn-danger btn-sm">완료</a>
+      <a href="{% url "edit" id=todo.id %}" class="btn btn-outline-primary btn-sm">수정</a>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
 {% endblock content %}

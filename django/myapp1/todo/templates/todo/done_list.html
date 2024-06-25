@@ -1,0 +1,32 @@
+{% extends "base.html" %} {% block content %}
+<div class="row mb-3">
+  <h2>Todo List</h2>
+</div>
+<div class="row mb-3">
+  <div class="col">
+    <a href="{% url "create" %}" class="btn btn-success">
+      <i class="fa-solid fa-plus"></i>
+      Todo
+    </a>
+  </div>
+  <div class="col text-end">
+    <a href="{% url "list" %}" class="btn btn-primary">Todo 목록</a>
+  </div>
+</div>
+<table class="table mt-5">
+  {% for done in dones %}
+  <tr>
+    <th>
+      <a href="{% url "read" id=done.id %}" class="text-reset text-decoration-none">{{done.title}}</a>
+      {% if done.important %}
+      <span class="badge text-bg-danger">!</span>
+      {% endif %}
+    </th>
+    <td class="text-end">
+      <a href="{% url "done" id=done.id %}" class="btn btn-danger btn-sm">완료</a>
+      <a href="" class="btn btn-outline-primary btn-sm">수정</a>
+    </td>
+  </tr>
+  {% endfor %}
+</table>
+{% endblock content %}

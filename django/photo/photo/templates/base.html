@@ -18,17 +18,20 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     />
-
-    <title>Document</title>
+    {% block style %}{% endblock style %}
+    <title>Photo</title>
   </head>
   <body>
     {% comment %} 레이아웃 작업 : 자바에서 작성하는 layout 코드랑 비슷한 개념 {% endcomment %}
-    <div class="container mt-5">{% comment %} 장고코드 block 자동완성 {% endcomment %} {% block content %}{% endblock content %}</div>
-
+    <div class="container mt-5">
+      {% comment %} 장고코드 block 자동완성 {% endcomment %}
+      {% block content %}{% endblock content %}
+    </div>
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
+    {% block script %}{% endblock script %}
   </body>
 </html>

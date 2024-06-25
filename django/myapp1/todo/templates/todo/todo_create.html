@@ -1,0 +1,27 @@
+{% extends "base.html" %} {% block content %}
+<div class="row mb-3">
+  <h2>Todo Create</h2>
+</div>
+<div class="row">
+  <form action="" method="post">
+    {% comment %} 장고는 post 보낼때 시큐리티 설정을 안해도 csrf 를 보내야해서 {% endcomment %} {% comment %} cs 정도만 입력해도 자동완성 되서 {%
+    csrf_token %} 이거로 csrf 보낸다 {% endcomment %} {% csrf_token %}
+    <div class="mb-3">
+      <label for="title" class="form-label">Title</label>
+      <input type="text" class="form-control" id="title" name="title" />
+    </div>
+    <div class="mb-3">
+      <label for="description" class="form-label">Description</label>
+      <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+    </div>
+    <div class="form-check mb-3">
+      <input class="form-check-input" type="checkbox" value="True" id="important" name="important" />
+      <label class="form-check-label" for="important"> Important </label>
+    </div>
+    <div>
+      <button class="btn btn-primary">등록</button>
+      <a href="{% url "list" %}" class="btn btn-success">목록</a>
+    </div>
+  </form>
+</div>
+{% endblock content %}
