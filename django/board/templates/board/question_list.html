@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% comment %} 
+load 는 extends 밑에 써준다 filter load 후 서버를 껏다가 다시 켜준다
+{% endcomment %}
+{% load board_filter %}
+{% block content %}
+<div class="container">
+  <div class="row mt-3 justify-content-between">
+    <div class="col-md-3">
+      <select class="form-select so">
+        <option value="recent">최신순</option>
+        <option value="recommend">추천순</option>
+        <option value="popular">인기순</option>
+      </select>
+    </div>
+    <div class="col-md-8">
+      <div class="input-group mb-3">
+        <input type="text" name="" id="top_keyword" class="form-control" value=""/>
+        <button class="btn btn-outline-secondary" type="submit" id="btn_search">찾기</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="my-3">
+    <table class="table">
+      <thead>
+        <tr class="table-success">
+          <th scope="col">번호</th>
+          <th scope="col">추천</th>
+          <th scope="col">제목</th>
+          <th scope="col">작성자</th>
+          <th scope="col">작성일시</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% comment %} 
+        question_list 가 존재하면 if 밑에 실행
+        {% empty %} 대신 if-else 를 사용한것
+        {% endcomment %}
+        {% if question_list %} 
+          {% for question in question_list %}
+            <tr>
+              <th scope="row">
+                <!-- 번호 -->
+                 {% comment %} {{question.id}} {% endcomment %}
+                 {% comment %}
+                 https://docs.djangoproject.com/en/5.0/ref/templates/builtins/ 에 자동완성 명령어 사용
+                 {{forloop.counter}} : 1 번 부터 번호를 자동으로 입력해준다
+                 {{forloop.counter0}} : 0 번 부터 시작
+
+                 question_list.paginator.count : 전체 게시물 개수
+                 question_list.start_index : 페이지당 시작되는 게시물의 시작 번호
+                 forloop.counter0 : 페이지당 0번 부터 계속 번호 넣어준다
+                 add:1 : +1
+                 {% endcomment %}
+                 {{question_list.paginator.count|sub:question_list.start_index|sub:forloop.counter0|add:1}}
+              </th>
+              <td>
+                <span class="badge text-bg-warning px-2 py-1">
+                  <!--질문 추천 수 보여주기-->
+                </span>
+              </td>
+              <td>
+                {% comment %}
+                urls.py 에 app_name = "board" 로 앱네임을 설정해 놔서
+                그냥 url "question_detail" 하면 밑에 오류 메세지가 나온다
+                NoReverseMatch at /board/
+                Reverse for 'question_detail' not found. 'question_detail' is not a valid view function or pattern name.
+                해결 : url "board:question_detail" 앱네임을 붙여준다
+
+                qid=question.id : urls.py 에서 "<int:qid>/" 로 해서 qid= 를 사용
+                {% endcomment %}
+                <a href="{% url "board:question_detail" qid=question.id %}" class="text-decoration-none text-dark">
+                  <!--질문 제목-->
+                  {{question.subject}}
+
+                  {% if question.answer_set.count > 0 %}
+                  <span class="text-primary small mx-2">
+                    <!-- 질문에 달린 답변의 개수 표시 -->
+                     {% comment %} 1 -> N 쪽으로 접근 {% endcomment %}
+                     [ {{question.answer_set.count}} ]
+                  </span>
+                  {% endif %}
+                </a>
+              </td>
+              <td>
+                <!-- 질문 작성자 -->
+              </td>
+              <td>
+                <!-- 질문 작성일시 -->
+                 {{question.created_at}}
+              </td>
+            </tr>
+          {% endfor %}
+        {% comment %} question_list 가 존재하지 않으면 else 밑에 실행 {% endcomment %}
+        {% else %}
+          <tr>
+            <td colspan="3">질문이 없습니다.</td>
+          </tr>
+        {% endif %}
+      </tbody>
+    </table>
+    <!-- 페이징 처리 -->
+    <nav aria-label="">
+      <ul class="pagination justify-content-center">
+        {% if question_list.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{question_list.previous_page_number}}">Previous</a>
+        </li>
+        {% endif %}
+
+        {% for page in question_list.paginator.page_range %}
+        {% comment %}
+        add 필터
+        현재페이지 를 기준으로 뒤쪽 페이지는 -5 를 더해서 보여주고
+        앞쪽 페이지는 +5 더해서 페이지목록을 보여준다
+        {% endcomment %}
+        {% comment %} {% if page >= question_list.number|add:-5 and page <= question_list.number|add:5%} {% endcomment %}
+        {% if page > question_list.number|add:-5 and page < question_list.number|add:5%}
+        {% comment %}
+        {% if page == question_list.number %}active{% endif %} : 현제페이지번호와 주소창?page= 값이 같은경우 active 붙이기
+        {% endcomment %}
+        <li class="page-item {% if page == question_list.number %}active{% endif %}">
+          <a class="page-link" href="?page={{page}}">{{page}}</a>
+        </li>
+        {% endif %}
+        {% endfor %}
+
+        {% if question_list.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{question_list.next_page_number}}">Next</a>
+        </li>
+        {% endif %}
+      </ul>
+    </nav>
+    <div>
+      <a href="{% url "board:question_create" %}" class="btn btn-primary">질문 등록</a>
+    </div>
+  </div>
+
+  <!--페이지 번호 클릭 시 이동할 폼-->
+  <form action="" method="get" id="actionForm">
+    <input type="hidden" name="keyword" value="" id="keyword"/>
+    <input type="hidden" name="page" value="" id="page"/>
+  </form>
+</div>
+{% endblock content %}

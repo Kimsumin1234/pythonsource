@@ -1,7 +1,12 @@
+# 먼저 django 폴더 밑에 프로젝트명 폴더를 생성
+# E:\source\pythonsource> cd .\django\
+# E:\source\pythonsource\django> cd .\프로젝트명\ 으로 접근 후
+# 명령어 사용하면된다
+
 # 파이썬웹 개발 프로젝트 명령어
 # config : 다른 폴더명 사용 가능
 django-admin startproject config .
-python manage.py startapp 프로젝트명
+python manage.py startapp 앱명
 python manage.py migrate (데이터베이스 변경사항 적용)
 python manage.py createsuperuser (admin 계정 활성화)
 python manage.py runserver (서버 실행)
