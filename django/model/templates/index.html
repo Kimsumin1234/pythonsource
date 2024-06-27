@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+  </head>
+
+  <body>
+    <h1>Index</h1>
+    <ul>
+        {% comment %} 
+        if not user.is_authenticated : 인증정보가 없으면 보여주기
+        {% endcomment %}
+      {% if not user.is_authenticated %}
+        <li>
+          <a href="{% url "common:register" %}">회원가입</a>
+        </li>
+        <li>
+          <a href="{% url "common:login" %}">로그인</a>
+        </li>
+        <li>
+          <a href="{% url "common:password_reset" %}">비밀번호 초기화</a>
+        </li>
+        {% else %}
+        <li>
+          {% comment %} django 가 제공하는 로그아웃은 GET 방식이 안되서 따로 form 만들고 js 로 form 전송함 {% endcomment %}
+          <a href="#" id='logout'>로그아웃</a>
+        </li>
+        <li>
+          <a href="{% url "common:password_change" %}">비밀번호 변경</a>
+        </li>
+      {% endif %}
+    </ul>
+    {% comment %} 로그아웃 폼 {% endcomment %}
+    <form action="{% url "common:logout" %}" id='logoutForm' method="post">
+      {% csrf_token %}
+    </form>
+    <script src="{% static "/js/index.js" %}"></script>
+  </body>
+
+</html>
