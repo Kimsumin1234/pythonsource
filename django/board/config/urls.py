@@ -17,9 +17,12 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import include, path
+from django.views.generic import RedirectView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("board/", include("board.urls")),
     path("common/", include("common.urls")),
+    # http://127.0.0.1:8000/ 를 치고 들어가도 http://127.0.0.1:8000/board 로 가게됨
+    path("", RedirectView.as_view(url="/board/"), name="index"),
 ]

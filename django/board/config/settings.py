@@ -133,3 +133,20 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# 기본값으로 세팅된 URL 을 사용하지 않고 임의로 변경하는 방법
+# 기본세팅 : http://127.0.0.1:8000/accounts/profile/ => profile 쪽으로 간다
+# 로그인 성공 시 이동할 URL
+LOGIN_REDIRECT_URL = "/"
+# 로그아웃 성공 시 이동할 URL
+LOGOUT_REDIRECT_URL = "/"
+
+# 나의 네이버 이메일을 이용해 client(사용자) 에게 이메일 전송하기
+DEFAULT_FROM_EMAIL = "whshaks15@naver.com"  # 네이버 이메일
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
+EMAIL_HOST = "smtp.naver.com"
+EMAIL_HOST_USER = "whshaks15"  # 아이디
+EMAIL_HOST_PASSWORD = "rlatngksan9430"  # 비밀번호
+EMAIL_PORT = 465

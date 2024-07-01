@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="container px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+      <div class="col-md-10 col-lg-8 col-xl-7">
+        <h1>수정하기</h1>
+        {% include "form_errors.html" %}
+        <!--이미지 업로드시 추가 : enctype="multipart/form-data" -->
+        <form action="" method="post" class="my-5" enctype="multipart/form-data">
+          <!-- csrf token-->
+          {% csrf_token %}
+          <div class="form-group mb-3">
+            <label for="title">제목</label>
+            <input type="text" name="title" id="title" class="form-control" value='{{form.title.value|default_if_none:""}}'></input>
+          </div>
+          <div class="form-group mb-3">
+            <label for="subject">내용</label>
+            <textarea name="content" id="content" rows="10" class="form-control">{{form.content.value|default_if_none:""}}</textarea>
+          </div>
+          <!--이미지-->
+          <div class="form-group mb-3">
+            <label for="image">이미지</label>
+          </div>
+
+          {% if form.image.value %}
+            <div class="row mb-2">
+              <div class="col-auto">현재</div>
+              <div class="col-auto">
+                <!--폼에 들어있는 이미지 가져오기-->
+                <a href="{{form.image.value.url}}">
+                  <span>{{form.image.value.name}}</span>
+                </a>
+              </div>
+
+              <div class="col-auto">
+                <!-- django 에서 name="image-clear" id="image-clear_id" 이거를 사용하면 취소 체크여부에 따라서 이미지파일을 제거해준다 -->
+                <input type="checkbox" name="image-clear" id="image-clear_id" class="form-check-input">
+                <label for="image-clear_id" class="form-check-label">취소</label>
+              </div>
+            </div>
+          {% endif %}
+
+          <div class="form-group mb-2">
+            변경
+            <input type="file" name="image" id="image" class="form-control"></input>
+          </div>
+
+          <div class="form-group mb-2">
+            <input type="submit" value="수정" class="btn btn-primary"/>
+            <a href="{% url "blog:delete" post.id %}" class="btn btn-danger">삭제</a>
+            <a href="{% url "blog:list" %}" class="btn btn-info">목록</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

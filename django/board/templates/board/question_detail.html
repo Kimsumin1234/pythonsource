@@ -1,6 +1,23 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
-  <div class="container">
+  <div class="container mt-5">
+    {% comment %} 
+    메세지 띄우는 방법
+    board/views.py 에서 def vote_question(request, qid): messages.error(request, "본인이 작성한 글은 추천할 수 없습니다.")
+
+    if messages : messages 가 있으면 보여주기
+    {% endcomment %}
+    {% if messages %}
+    <div class="alert alert-danger">
+      {% for msg in messages %}
+            <strong>{{ msg.tags }}</strong>
+            <ul>
+              <li>{{msg.message}}</li>
+            </ul>
+      {% endfor %} 
+    </div>
+    {% endif %}
     <h2 class="border-bottom py-2">
       <!-- 질문제목-->
       {{question.subject}}
@@ -10,9 +27,10 @@
       <div class="col-1">
         <div class="bg-light text-center p-3 border font-weight-bolder mb-1">
           <!--추천수-->
+          {{question.voter.count}}
         </div>
         <div class="d-grid d-block">
-          <a href="" class="recommand btn btn-sm btn-secondary">추천</a>
+          <a href="{% url "board:vote_question" question.id %}" class="recommand btn btn-sm btn-secondary">추천</a>
         </div>
       </div>
       <div class="col-11">
@@ -34,7 +52,8 @@
               {% endif %}
               <div class="badge text-bg-light p-2 text-start">
                 <div class="mb-2">
-                  <!--작성자-->
+                  <!--작성자(2024-06-28)-->
+                  {{question.author}}
                 </div>
                 <div>
                   <!--질문 작성 날짜-->
@@ -42,27 +61,44 @@
                 </div>
               </div>
             </div>
+            {% comment %} 작성자 == 로그인 사용자 일경우에만 수정/삭제 버튼 보여주기 {% endcomment %}
+            {% if question.author == request.user %}
             <div class="my-3">
-              <a href="" class="btn btn-sm btn-outline-secondary">수정</a>
-              <a href="" class="delete btn btn-sm btn-outline-secondary">삭제</a>
+              <a href="{% url "board:question_modify" question.id %}" class="btn btn-sm btn-outline-secondary">수정</a>
+              <a href="{% url "board:question_delete" question.id %}" class="delete btn btn-sm btn-outline-secondary">삭제</a>
             </div>
             <!--// 질문 영역 종료-->
+            {% endif %}
 
             <!-- 질문 댓글 영역-->
+             {% comment %} 
+             Comment 가 question 을 가지고 있고 Question 은 comment 가 없는 상황에서
+             Question 에서 Comment 로 역으로 접근하는 방법 : _set 을 사용한다
+             question.comment_set.count > 0 : 댓글이 있으면 댓글영역 보여주기
+             {% endcomment %}
+             {% if question.comment_set.count > 0 %}
             <div class="mt-3">
-              <a name=""></a>
+              {% for comment in question.comment_set.all %}
+              {% comment %} 질문댓글 a 태그의 name 속성 활용 {% endcomment %}
+              <a name="comment_{{comment.id}}"></a>
               <div class="comment py-2 text-muted">
-                <span style="white-space: pre-line"></span>
+                <span style="white-space: pre-line">{{comment.content}}</span>
                 <span>
                   <!--댓글 작성자 / 작성일시 / 수정일시-->
+                  - {{comment.author}}, {{comment.created_at}}
+                  {% if comment.modified_at %}
+                  (수정 : {{comment.modified_at}})
+                  {% endif %}
                 </span>
-                <a href="" class="small">수정</a>
-                <a href="" class="small delete">삭제</a>
+                <a href="{% url "board:comment_modify_question" comment.id %}" class="small">수정</a>
+                <a href="{% url "board:comment_delete_question" comment.id %}" class="small delete">삭제</a>
               </div>
+              {% endfor %}
             </div>
+            {% endif %}
           </div>
           <div class="mx-3">
-            <a href="" class="small">댓글추가....</a>
+            <a href="{% url "board:comment_create_question" question.id %}" class="small">댓글추가....</a>
           </div>
         </div>
       </div>
@@ -80,12 +116,16 @@
 
     {% comment %} html 에서는 all 에서 괄호는 빼고 부른다 {% endcomment %}
     {% for answer in question.answer_set.all %}
-    <a name=""></a>
+    {% comment %} a 태그의 name 속성 활용 {% endcomment %}
+    <a name="answer_{{answer.id}}"></a>
     <div class="row my-3">
+      {% comment %} 답변 추천 {% endcomment %}
       <div class="col-1">
-        <div class="bg-light text-center p-3 border font-weight-bolder mb-1"></div>
+        <div class="bg-light text-center p-3 border font-weight-bolder mb-1">
+          {{answer.voter.count}}
+        </div>
         <div class="d-grid d-block">
-          <a href="" class="recommand btn btn-sm btn-secondary">추천</a>
+          <a href="{% url "board:vote_answer" answer.id %}" class="recommand btn btn-sm btn-secondary">추천</a>
         </div>
       </div>
       <div class="col-11">
@@ -109,7 +149,8 @@
 
               <div class="badge text-bg-light p-2 text-start">
                 <div class="mb-2">
-                  <!--답변 작성자-->
+                  <!--답변 작성자(2024-06-28)-->
+                  {{answer.author}}
                 </div>
                 <div>
                   <!--답변작성날짜-->
@@ -117,30 +158,42 @@
                 </div>
               </div>
             </div>
-          </div>
-          <div class="my-3">
-            <a href="" class="btn btn-sm btn-outline-secondary">수정</a>
-            <a href="" class="delete btn btn-sm btn-outline-secondary">삭제</a>
+            {% comment %} 작성자 == 로그인 사용자 일경우에만 수정/삭제 버튼 보여주기 {% endcomment %}
+            {% if answer.author == request.user %}
+            <div class="my-3">
+              <a href="{% url "board:answer_modify" answer.id %}" class="btn btn-sm btn-outline-secondary">수정</a>
+              <a href="{% url "board:answer_delete" answer.id %}" class="delete btn btn-sm btn-outline-secondary">삭제</a>
+            </div>
+            {% endif %}
           </div>
           <!--// 답변 종료-->
 
           <!-- 답변 댓글 영역-->
+          {% if answer.comment_set.count > 0 %}
           <div class="mt-3">
-            <a name=""></a>
+            {% for comment in answer.comment_set.all %}
+            {% comment %} 답변댓글 a 태그의 name 속성 활용 {% endcomment %}
+            <a name="comment_{{comment.id}}"></a>
             <div class="comment py-2 text-muted">
-              <span style="white-space: pre-line"></span>
+              <span style="white-space: pre-line">{{comment.content}}</span>
               <span>
                 <!--댓글 작성자 / 작성일시 / 수정일시-->
+                - {{comment.author}}, {{comment.created_at}}
+                  {% if comment.modified_at %}
+                  (수정 : {{comment.modified_at}})
+                  {% endif %}
               </span>
-              <a href="" class="small">수정</a>
-              <a href="" class="small delete">삭제</a>
+              <a href="{% url "board:comment_modify_answer" comment.id %}" class="small">수정</a>
+              <a href="{% url "board:comment_delete_answer" comment.id %}" class="small delete">삭제</a>
             </div>
+            {% endfor %}
           </div>
-        </div>
-        <div>
-          <a href="" class="small">
+          {% endif %}
+          <a href="{% url "board:comment_create_answer" answer.id %}" class="small">
             <small>댓글추가...</small>
           </a>
+        </div>
+        <div>
         </div>
         <!--//질문 댓글 end-->
       </div>
@@ -149,7 +202,7 @@
     <!-- 답변 한 개 영역 종료-->
 
     <div>
-      <a href="{% url "board:question_list" %}" class="btn btn-sm btn-primary">목록으로</a>
+      <a href="{% url "board:question_list" %}" class="btn btn-sm btn-primary" id="list">목록으로</a>
     </div>
     
     {% comment %} 답변 등록 {% endcomment %}
@@ -166,7 +219,17 @@
       <div class="form-group mb-3">
         <textarea name="content" id="content" rows="10" class="form-control"></textarea>
       </div>
-      <input type="submit" value="답변 등록" class="btn btn-primary"/>
+      <input type="submit" value="답변 등록" class="btn btn-primary" {% if not user.is_authenticated %}disabled="disabled"{% endif %} />
     </form>
   </div>
+  <!--목록 클릭 시 이동할 폼 (2024-07-01) 추가-->
+  <form action="" method="get" id="actionForm">
+    <input type="hidden" name="keyword" value="{{keyword|default_if_none:""}}" id="keyword"/>
+    <input type="hidden" name="page" value="{{page}}" id="page"/>
+    <input type="hidden" name="so" value="{{so|default_if_none:""}}" id="so"/>
+  </form>
 {% endblock content %}
+
+{% block script %}
+<script src="{% static "js/detail.js" %}"></script>
+{% endblock script %}
