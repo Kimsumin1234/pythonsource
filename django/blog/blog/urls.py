@@ -15,3 +15,15 @@ urlpatterns = [
     # http://127.0.0.1:8000/blog/post/delete/1
     path("post/delete/<int:post_id>/", views.delete, name="delete"),
 ]
+
+# 댓글
+urlpatterns += [
+    # http://127.0.0.1:8000/blog/post/comment/<post_id>
+    path("post/comment/<int:post_id>/", views.comment_create, name="comment_create"),
+]
+
+# 좋아요
+urlpatterns += [
+    # http://127.0.0.1:8000/blog/post/like/<post_id>
+    path("post/like/<int:post_id>/", views.post_like, name="post_like"),
+]

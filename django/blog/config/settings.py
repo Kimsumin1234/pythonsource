@@ -25,7 +25,8 @@ SECRET_KEY = "django-insecure-gtj2q9r#qm))^lu!w^%#b9eq#dionv)3^^f-$6)dwg@ln*=4!p
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# https://www.pythonanywhere.com/ 에서 회원가입 함 (호스팅주소 등록 유저네임.pythonanywhere.com)
+ALLOWED_HOSTS = ["sm3055.pythonanywhere.com"]
 
 
 # Application definition
@@ -39,6 +40,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "blog",
     "common",
+    "taggit",
+    "django_social_share",
 ]
 
 MIDDLEWARE = [
